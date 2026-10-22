@@ -18,6 +18,8 @@ function createDatabase() {
   return drizzle(client, { schema });
 }
 
+export type Database = ReturnType<typeof createDatabase>;
+
 const globalForDb = globalThis as typeof globalThis & {
   menuDatabase?: ReturnType<typeof createDatabase>;
 };
