@@ -84,15 +84,3 @@ npm run typecheck
 npm test
 npm run build
 ```
-
-PostgreSQL 통합 검사는 별도의 테스트 DB 주소로 실행합니다. 테스트 DB에 migration이 적용됩니다.
-
-```bash
-TEST_DATABASE_URL='postgresql://user:password@localhost:5432/menu_test' npm test -- tests/integration/menu-import.test.ts
-```
-
-실제 국방부 CSV 다운로드 검사는 외부 네트워크가 가능한 환경에서 실행합니다.
-
-```bash
-LIVE_MND=1 CSV_DOWNLOAD_URL=https://opendata.mnd.go.kr/openinf/opencom/down2csv.jsp npm test -- tests/integration/mnd-csv.test.ts
-```

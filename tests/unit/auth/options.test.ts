@@ -26,7 +26,7 @@ describe("authentication configuration", () => {
 
       expect(getAuthOptions()).toBeNull();
       const response = await GET(
-        new NextRequest("http://localhost:3000/api/auth/providers"),
+        new NextRequest("https://example.test/api/auth/providers"),
         { params: Promise.resolve({ nextauth: ["providers"] }) },
       );
       expect(response.status).toBe(503);
