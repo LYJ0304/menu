@@ -9,6 +9,9 @@ const eslintConfig = defineConfig([
     files: [
       "src/features/meals/types.ts",
       "src/features/meals/date.ts",
+      "src/features/meals/calendar.ts",
+      "src/features/meals/presentation.ts",
+      "src/features/meals/components/**/*.tsx",
       "src/features/meals/import/**/*.ts",
       "src/features/meals/csv/**/*.ts",
       "src/features/meals/http/**/*.ts",
