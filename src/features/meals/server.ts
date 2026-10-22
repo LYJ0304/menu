@@ -6,7 +6,7 @@ import { getMndMenuSourceConfig } from "./csv/sources/mnd-menu";
 import { importMenuCsv } from "./import/import-menu-csv";
 import { ImportRepository } from "./repositories/import-repository";
 import { MenuQueryRepository } from "./repositories/menu-query-repository";
-import type { MenuQueryStore } from "./types";
+import { MND_MENU_SOURCE, type MenuQueryStore } from "./types";
 
 export function importMndMenuCsv() {
   return importMenuCsv({
@@ -19,3 +19,7 @@ export function importMndMenuCsv() {
 export const menuQueries: MenuQueryStore = {
   getMenuPage: (query) => new MenuQueryRepository(getDb()).getMenuPage(query),
 };
+
+export function getDailyMenu(date: string) {
+  return new MenuQueryRepository(getDb()).getDailyMenu(MND_MENU_SOURCE, date);
+}

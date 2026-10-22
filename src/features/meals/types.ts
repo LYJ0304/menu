@@ -107,15 +107,23 @@ export interface ImportRunSummary {
   completedAt: Date | null;
 }
 
+export interface MenuItem {
+  id: string;
+  mealDate: string;
+  mealType: MealType;
+  menuName: string;
+  calories: string | null;
+  rawCalories: string;
+}
+
+export interface DailyMenuResult {
+  items: MenuItem[];
+  totalCalories: string | null;
+  lastSuccessfulImportAt: Date | null;
+}
+
 export interface MenuPageResult {
-  items: Array<{
-    id: string;
-    mealDate: string;
-    mealType: MealType;
-    menuName: string;
-    calories: string | null;
-    rawCalories: string;
-  }>;
+  items: MenuItem[];
   total: number;
   latestRun: ImportRunSummary | null;
   lastSuccessfulImportAt: Date | null;

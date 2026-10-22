@@ -1,13 +1,33 @@
-export default function Home() {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-5 px-6 py-16">
-      <p className="text-sm font-semibold tracking-widest text-emerald-700">
-        MENU
-      </p>
-      <h1 className="text-4xl font-bold tracking-tight">병영 식단을 한눈에</h1>
-      <p className="leading-7 text-zinc-600">
-        식단 조회와 리뷰, 취향에 맞는 메뉴 추천을 준비하고 있습니다.
-      </p>
-    </main>
-  );
+import { redirect } from "next/navigation";
+import { getKoreanToday } from "@/features/meals/calendar";
+import { MealSchedule } from "@/features/meals/components/meal-schedule";
+import { parseMealDate } from "@/features/meals/date";
+import { getDailyMenu } from "@/features/meals/server";
+import type { DailyMenuResult } from "@/features/meals/types";
+
+export const dynamic = "force-dynamic";
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string | string[] }>;
+}) {
+  const { date } = await searchParams;
+  if (
+    date !== undefined &&
+    (typeof date !== "string" || parseMealDate(date) !== date)
+  ) {
+    redirect("/");
+  }
+
+  const today = getKoreanToday();
+  const selectedDate = date ?? today;
+  let menu: DailyMenuResult | null = null;
+  try {
+    menu = await getDailyMenu(selectedDate);
+  } catch {
+    console.error("Failed to load daily menu");
+  }
+
+  return <MealSchedule today={today} selectedDate={selectedDate} menu={menu} />;
 }
