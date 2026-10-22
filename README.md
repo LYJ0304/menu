@@ -23,6 +23,7 @@ DB·카카오 환경변수가 없어도 홈 화면은 실행됩니다.
 | 변수 | 설정 |
 | --- | --- |
 | `DATABASE_URL` | Neon 대시보드의 pooled PostgreSQL 연결 문자열. SSL 옵션 유지 |
+| `DATABASE_URL_UNPOOLED` | migration용 direct 연결 문자열. Neon CLI가 내려주는 값 사용 |
 | `CSV_DOWNLOAD_URL` | 국방부 CSV 주소: `https://opendata.mnd.go.kr/openinf/opencom/down2csv.jsp` |
 | `CRON_SECRET` | 수집 API 인증용 값. `openssl rand -base64 32`로 생성 |
 | `NEXTAUTH_URL` | 로컬: `http://localhost:3000`, 운영: 실제 HTTPS 주소 |
@@ -41,6 +42,17 @@ https://<운영 도메인>/api/auth/callback/kakao
 환경변수와 실제 자격 증명은 Git에 올리지 않습니다.
 
 ## DB 설정
+
+Neon CLI로 지정 프로젝트에 연결하고 DB 환경변수를 내려받습니다.
+
+```bash
+neon login
+neon init -y --org-id org-late-shadow-26599577 --project-id square-shadow-99151836 --branch production --services postgres
+neon deploy
+```
+
+`neon.ts`는 Postgres 서비스 구성을 관리합니다. `.neon`과 실제 연결 문자열이 담긴 `.env.local`은 Git에서 제외됩니다.
+앱은 `DATABASE_URL`을 사용하고, migration은 `DATABASE_URL_UNPOOLED`를 우선 사용합니다.
 
 `DATABASE_URL`을 설정하고 포함된 migration을 적용합니다.
 
