@@ -1,22 +1,47 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --background: #f6f7f2;
-  --foreground: #24312b;
+  color-scheme: light;
+  --background: #fafafa;
+  --surface: #ffffff;
+  --foreground: #18181b;
+  --text-body: #52525b;
+  --text-muted: #71717a;
+  --border: #e4e4e7;
+  --accent: #18794e;
+  --accent-surface: #edf6f0;
+  --selected: #18181b;
+  --selected-foreground: #ffffff;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #111113;
+  --surface: #19191c;
+  --foreground: #f4f4f5;
+  --text-body: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --border: #303036;
+  --accent: #6ee7b7;
+  --accent-surface: #17352b;
+  --selected: #f4f4f5;
+  --selected-foreground: #18181b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-canvas: #f6f7f2;
-  --color-forest: #2c6148;
-  --color-forest-dark: #204a36;
-  --color-sage: #edf3e9;
-  --color-line: #e3e8df;
-  --color-ink: #24312b;
-  --color-body: #536157;
-  --color-muted: #637066;
-  --shadow-soft: 0 3px 18px -10px rgb(25 53 33 / 12%);
+  --color-canvas: var(--background);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-line: var(--border);
+  --color-ink: var(--foreground);
+  --color-body: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-selected: var(--selected);
+  --color-selected-foreground: var(--selected-foreground);
   --font-sans:
     "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
   --font-mono: monospace;
@@ -30,11 +55,11 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-forest);
-  outline-offset: 4px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 ::selection {
-  background: #d7e8cd;
-  color: var(--color-ink);
+  background: var(--accent-surface);
+  color: var(--foreground);
 }

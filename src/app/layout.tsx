@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, MapPin, Utensils } from "lucide-react";
+import { Utensils } from "lucide-react";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,54 +16,48 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className="h-full antialiased">
+    <html lang="ko" className="h-full antialiased" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-forest focus:px-4 focus:py-3 focus:text-white"
-        >
-          본문으로 바로가기
-        </a>
-        <header className="border-b border-line bg-white">
-          <div className="mx-auto flex min-h-20 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
-            <div className="flex items-center gap-7 sm:gap-12">
-              <Link
-                href="/"
-                aria-label="한끼 홈"
-                className="flex items-center gap-2.5"
-              >
-                <span className="flex size-9 items-center justify-center rounded-xl bg-forest text-white">
+        <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-selected focus:px-4 focus:py-3 focus:text-selected-foreground"
+          >
+            본문으로 바로가기
+          </a>
+          <header className="border-b border-line bg-surface">
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
+              <div className="flex items-center gap-8">
+                <Link
+                  href="/"
+                  aria-label="한끼 홈"
+                  className="flex items-center gap-2 text-lg font-bold tracking-tight text-ink"
+                >
                   <Utensils
-                    className="size-5"
+                    className="size-4 text-accent"
                     strokeWidth={1.8}
                     aria-hidden="true"
                   />
-                </span>
-                <span className="text-[23px] font-extrabold tracking-tight text-forest">
-                  한끼<span className="text-ink">.</span>
-                </span>
-              </Link>
-              <nav
-                aria-label="메인 메뉴"
-                className="hidden self-stretch sm:flex"
-              >
-                <Link
-                  href="/"
-                  aria-current="page"
-                  className="flex items-center gap-2 border-b-2 border-forest py-7 text-sm font-semibold text-forest"
-                >
-                  <CalendarDays className="size-4" aria-hidden="true" />
-                  식단표
+                  한끼
                 </Link>
-              </nav>
+                <nav aria-label="메인 메뉴" className="hidden sm:block">
+                  <Link
+                    href="/"
+                    aria-current="page"
+                    className="flex h-16 items-center border-b-2 border-ink text-sm font-medium text-ink"
+                  >
+                    식단표
+                  </Link>
+                </nav>
+              </div>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <p className="text-xs text-muted">제9030부대</p>
+                <ThemeToggle />
+              </div>
             </div>
-            <p className="flex items-center gap-1.5 rounded-full bg-canvas px-3 py-2 text-xs font-medium text-body">
-              <MapPin className="size-3.5 text-forest" aria-hidden="true" />
-              제9030부대
-            </p>
-          </div>
-        </header>
-        {children}
+          </header>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
