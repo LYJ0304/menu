@@ -74,7 +74,22 @@ curl --fail-with-body -H "Authorization: Bearer $CRON_SECRET" \
 ```
 
 Vercel에 배포할 때도 `DATABASE_URL`, `CSV_DOWNLOAD_URL`, `CRON_SECRET`을 등록합니다.
-`vercel.json`의 Cron은 매일 UTC 00:00(한국시간 09:00)로 설정되어 있습니다.
+
+### GitHub Actions 설정
+
+GitHub 저장소의 **Settings → Secrets and variables → Actions**에 등록합니다.
+
+| 구분 | 이름 | 값 |
+| --- | --- | --- |
+| Variables | `APP_URL` | 운영 사이트의 HTTPS 주소. 리다이렉트되지 않는 주소 사용 |
+| Secrets | `CRON_SECRET` | Vercel Production의 `CRON_SECRET`과 동일한 값 |
+| Secrets (선택) | `VERCEL_AUTOMATION_BYPASS_SECRET` | Vercel Deployment Protection이 적용된 경우 자동화 우회용 값 |
+
+GitHub Actions에는 DB 연결 문자열이나 Neon 비밀번호를 등록하지 않습니다. 수집과 DB 저장은 Vercel의 인증된 `/api/cron/import-csv` API가 처리합니다.
+
+`.github/workflows/sync-9030-meals.yml`은 `military-info`와 동일하게 매일 한국시간 **06:00**에 실행됩니다. 수동 실행은 **Actions → Sync 9030 meals → Run workflow**를 사용합니다. 동일 워크플로의 동시 실행은 제한하며, 이미 처리한 CSV는 기존 체크섬 검증으로 건너뜁니다.
+
+예약 실행은 워크플로가 기본 브랜치에 반영된 뒤 활성화되고, GitHub 상황에 따라 지연될 수 있습니다. 기존 Vercel Cron은 제거했으므로 중복 스케줄 제거도 운영 배포에 반영해야 합니다.
 
 ## 검사
 

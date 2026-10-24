@@ -1,0 +1,54 @@
+name: Sync 9030 meals
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+      timezone: "Asia/Seoul"
+
+concurrency:
+  group: sync-9030-meals
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Poll meal import API
+        shell: bash
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          : "${APP_URL:?Set the APP_URL repository variable to the production HTTPS origin}"
+          : "${CRON_SECRET:?Set the CRON_SECRET repository secret to match Vercel}"
+
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+
+          headers=(--header "Authorization: Bearer $CRON_SECRET")
+          if [[ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]]; then
+            headers+=(--header "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET")
+          fi
+
+          http_code="$(curl --silent --show-error \
+            --proto '=https' --connect-timeout 30 --max-time 330 \
+            --output "$response_file" --write-out '%{http_code}' \
+            "${headers[@]}" "${APP_URL%/}/api/cron/import-csv")"
+
+          if [[ "$http_code" != "200" && "$http_code" != "409" ]]; then
+            echo "::error::Meal import returned HTTP $http_code"
+            exit 1
+          fi
+
+          jq --exit-status --arg code "$http_code" '
+            if $code == "409" then .status == "SKIPPED"
+            else .status == "COMPLETED" or .status == "PARTIALLY_COMPLETED" or .status == "SKIPPED"
+            end
+          ' "$response_file" > /dev/null
+
+          jq '{status, runId, totalRows, importedRows, failedRows}' "$response_file"
