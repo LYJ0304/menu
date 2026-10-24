@@ -52,10 +52,7 @@ export default function RootLayout({
                   </Link>
                 </nav>
               </div>
-              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-                <p className="text-xs text-muted">계룡대 근무지원단</p>
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
             </div>
           </header>
           <MealSelectionProvider initialMeal={getDefaultMealType()}>
