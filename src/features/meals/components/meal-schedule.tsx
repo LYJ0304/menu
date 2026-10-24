@@ -3,6 +3,7 @@ import { formatCalendarDate } from "../calendar";
 import { formatCalories, getMealCalories } from "../presentation";
 import type { DailyMenuResult } from "../types";
 import { MealCard } from "./meal-card";
+import { MobileMealTabs } from "./meal-selection";
 import { WeekNavigation } from "./week-navigation";
 
 export function MealSchedule({
@@ -22,16 +23,24 @@ export function MealSchedule({
   const specialItems =
     menu?.items.filter((item) => item.mealType === "SPECIAL") ?? [];
   const specialCalories = getMealCalories(specialItems);
+  const cards = (["BREAKFAST", "LUNCH", "DINNER"] as const).map((type) => (
+    <MealCard
+      key={type}
+      type={type}
+      items={menu?.items.filter((item) => item.mealType === type) ?? []}
+    />
+  ));
 
   return (
     <main
       id="main-content"
-      className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8"
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-6 sm:px-8 sm:py-8"
     >
       <h1 className="mb-5 text-2xl font-semibold tracking-tight">식단표</h1>
-      <WeekNavigation today={today} selectedDate={selectedDate} />
-
-      <section className="mt-6" aria-labelledby="daily-heading">
+      <section
+        className="order-1 md:order-2 md:mt-6"
+        aria-labelledby="daily-heading"
+      >
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <h2 id="daily-heading" className="text-base font-semibold">
@@ -76,14 +85,9 @@ export function MealSchedule({
                 등록된 식단이 없습니다.
               </p>
             )}
-            <div className="grid gap-3 md:grid-cols-3 sm:gap-4">
-              {(["BREAKFAST", "LUNCH", "DINNER"] as const).map((type) => (
-                <MealCard
-                  key={type}
-                  type={type}
-                  items={menu.items.filter((item) => item.mealType === type)}
-                />
-              ))}
+            <MobileMealTabs cards={cards} />
+            <div className="hidden grid-cols-3 gap-4 md:grid">
+              {cards}
             </div>
             {specialItems.length > 0 && (
               <article
@@ -109,7 +113,11 @@ export function MealSchedule({
         )}
       </section>
 
-      <footer className="mt-8 border-t border-line pt-4 text-[11px] leading-5 text-muted">
+      <div className="order-2 mt-6 md:order-1 md:mt-0">
+        <WeekNavigation today={today} selectedDate={selectedDate} />
+      </div>
+
+      <footer className="order-3 mt-8 border-t border-line pt-4 text-[11px] leading-5 text-muted">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
           <a
             href="https://opendata.mnd.go.kr/openinf/sheetview2.jsp?infId=OA-9561"
@@ -128,6 +136,7 @@ export function MealSchedule({
         <p className="mt-1">
           실제 제공 메뉴는 부대 사정에 따라 변경될 수 있습니다.
         </p>
+        <p className="mt-2 text-right">v1.0.0</p>
       </footer>
     </main>
   );

@@ -9,14 +9,18 @@ export default function Loading() {
       <p className="sr-only" role="status">
         식단을 불러오고 있습니다.
       </p>
-      <div aria-hidden="true" className="space-y-5 motion-safe:animate-pulse">
+      <div
+        aria-hidden="true"
+        className="flex flex-col gap-5 motion-safe:animate-pulse"
+      >
         <div className="h-8 w-24 rounded bg-line" />
-        <div className="h-32 rounded-lg border border-line bg-surface" />
+        <div className="order-2 h-32 rounded-lg border border-line bg-surface md:order-none" />
+        <div className="h-12 rounded-lg border border-line bg-surface md:hidden" />
         <div className="grid gap-4 md:grid-cols-3">
           {[0, 1, 2].map((index) => (
             <div
               key={index}
-              className="h-64 rounded-lg border border-line bg-surface"
+              className={`h-64 rounded-lg border border-line bg-surface ${index > 0 ? "hidden md:block" : ""}`}
             />
           ))}
         </div>

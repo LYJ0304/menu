@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Utensils } from "lucide-react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { getDefaultMealType } from "@/features/meals/calendar";
+import { MealSelectionProvider } from "@/features/meals/components/meal-selection";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -50,13 +52,12 @@ export default function RootLayout({
                   </Link>
                 </nav>
               </div>
-              <div className="flex items-center gap-3 sm:gap-4">
-                <p className="text-xs text-muted">제9030부대</p>
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
             </div>
           </header>
-          {children}
+          <MealSelectionProvider initialMeal={getDefaultMealType()}>
+            {children}
+          </MealSelectionProvider>
         </ThemeProvider>
       </body>
     </html>
