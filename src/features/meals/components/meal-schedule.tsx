@@ -137,7 +137,20 @@ export function MealSchedule({
           <p className="text-pretty">
             실제 제공 메뉴는 부대 사정에 따라 변경될 수 있습니다.
           </p>
-          <p className="shrink-0 tabular-nums">v1.0.1</p>
+          <p className="flex flex-wrap items-center gap-x-2">
+            <span>Made by Lee Young Joon</span>
+            <span aria-hidden="true">·</span>
+            <a
+              href="https://github.com/LYJ0304/menu/issues/new"
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-4 hover:text-ink"
+            >
+              문의<span className="sr-only">(GitHub 이슈 작성, 새 창)</span>
+            </a>
+            <span aria-hidden="true">·</span>
+            <span className="tabular-nums">v1.0.2</span>
+          </p>
         </div>
       </footer>
     </main>
