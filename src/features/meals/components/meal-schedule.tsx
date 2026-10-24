@@ -133,24 +133,22 @@ export function MealSchedule({
               : "날짜는 한국시간 기준입니다."}
           </p>
         </div>
-        <div className="mt-3 flex flex-col items-start gap-1 md:mt-1 md:flex-row md:justify-between md:gap-x-4">
+        <div className="mt-3 flex flex-col items-start gap-1 md:mt-1">
           <p className="text-pretty">
             실제 제공 메뉴는 부대 사정에 따라 변경될 수 있습니다.
           </p>
-          <p className="flex flex-wrap items-center gap-x-2">
-            <span>Made by Lee Young Joon</span>
-            <span aria-hidden="true">·</span>
-            <a
-              href="https://github.com/LYJ0304/menu/issues/new"
-              target="_blank"
-              rel="noreferrer"
-              className="underline underline-offset-4 hover:text-ink"
-            >
-              문의<span className="sr-only">(GitHub 이슈 작성, 새 창)</span>
-            </a>
-            <span aria-hidden="true">·</span>
-            <span className="tabular-nums">v1.0.2</span>
-          </p>
+          <a
+            href="https://github.com/LYJ0304/menu/issues/new"
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-4 hover:text-ink"
+          >
+            문의<span className="sr-only">(GitHub 이슈 작성, 새 창)</span>
+          </a>
+        </div>
+        <div className="mt-4 space-y-1 text-center">
+          <p>Made by Lee Young Joon</p>
+          <p className="tabular-nums">v1.0.3</p>
         </div>
       </footer>
     </main>
