@@ -1,3 +1,18 @@
+import type { MealType } from "./types";
+
+export function getDefaultMealType(now = new Date()): Exclude<MealType, "SPECIAL"> {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Seoul",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(now),
+  );
+  if (hour < 13) return "LUNCH";
+  if (hour < 19) return "DINNER";
+  return "BREAKFAST";
+}
+
 export function getKoreanToday(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul",
