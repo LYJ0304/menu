@@ -117,13 +117,13 @@ export function MealSchedule({
         <WeekNavigation today={today} selectedDate={selectedDate} />
       </div>
 
-      <footer className="order-3 mt-8 border-t border-line pt-4 text-[11px] leading-5 text-muted">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <footer className="order-3 mt-8 border-t border-line pt-4 text-xs leading-6 text-muted md:text-[11px] md:leading-5">
+        <div className="flex flex-col items-start gap-1 md:flex-row md:justify-between md:gap-x-4">
           <a
             href="https://opendata.mnd.go.kr/openinf/sheetview2.jsp?infId=OA-9561"
             target="_blank"
             rel="noreferrer"
-            className="hover:text-ink"
+            className="font-medium text-body hover:text-ink"
           >
             국방부 제9030부대 식단 정보<span className="sr-only">(새 창)</span>
           </a>
@@ -133,10 +133,12 @@ export function MealSchedule({
               : "날짜는 한국시간 기준입니다."}
           </p>
         </div>
-        <p className="mt-1">
-          실제 제공 메뉴는 부대 사정에 따라 변경될 수 있습니다.
-        </p>
-        <p className="mt-2 text-right">v1.0.0</p>
+        <div className="mt-3 flex flex-col items-start gap-1 md:mt-1 md:flex-row md:justify-between md:gap-x-4">
+          <p className="text-pretty">
+            실제 제공 메뉴는 부대 사정에 따라 변경될 수 있습니다.
+          </p>
+          <p className="shrink-0 tabular-nums">v1.0.1</p>
+        </div>
       </footer>
     </main>
   );
