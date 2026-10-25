@@ -91,6 +91,11 @@ GitHub Actions에는 DB 연결 문자열이나 Neon 비밀번호를 등록하지
 
 예약 실행은 워크플로가 기본 브랜치에 반영된 뒤 활성화되고, GitHub 상황에 따라 지연될 수 있습니다. 기존 Vercel Cron은 제거했으므로 중복 스케줄 제거도 운영 배포에 반영해야 합니다.
 
+## 방문 통계
+
+루트 레이아웃의 `@vercel/analytics/next`로 Vercel Web Analytics를 연결합니다.
+Vercel 프로젝트의 **Analytics → Enable**을 활성화한 뒤 배포하면 방문 통계를 확인할 수 있습니다.
+
 ## 검사
 
 ```bash

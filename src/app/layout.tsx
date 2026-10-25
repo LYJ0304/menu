@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Utensils } from "lucide-react";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getDefaultMealType } from "@/features/meals/calendar";
@@ -59,6 +60,7 @@ export default function RootLayout({
             {children}
           </MealSelectionProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
