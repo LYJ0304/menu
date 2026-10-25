@@ -1,16 +1,27 @@
 import type { MealType } from "./types";
 
+function getKoreanMinutes(now: Date): number {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Seoul",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return Number(values.hour) * 60 + Number(values.minute);
+}
+
 export function getDefaultMealType(now = new Date()): Exclude<MealType, "SPECIAL"> {
-  const hour = Number(
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Seoul",
-      hour: "2-digit",
-      hourCycle: "h23",
-    }).format(now),
-  );
-  if (hour < 13) return "LUNCH";
-  if (hour < 19) return "DINNER";
+  const minutes = getKoreanMinutes(now);
+  if (minutes < 8 * 60 + 30) return "BREAKFAST";
+  if (minutes < 13 * 60) return "LUNCH";
+  if (minutes < 19 * 60) return "DINNER";
   return "BREAKFAST";
+}
+
+export function getDefaultMealDate(now = new Date()): string {
+  const today = getKoreanToday(now);
+  return getKoreanMinutes(now) >= 19 * 60 ? shiftDate(today, 1) : today;
 }
 
 export function getKoreanToday(now = new Date()): string {
