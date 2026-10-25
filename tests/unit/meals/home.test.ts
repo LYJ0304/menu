@@ -29,11 +29,25 @@ describe("meal home", () => {
   });
 
   it("loads the date selected through the URL", async () => {
+    vi.setSystemTime(new Date("2026-10-23T19:00:00+09:00"));
     const page = await Home({
       searchParams: Promise.resolve({ date: "2026-10-21" }),
     });
     expect(getDailyMenu).toHaveBeenCalledWith("2026-10-21");
     expect(page.props.selectedDate).toBe("2026-10-21");
+  });
+
+  it.each([
+    ["2026-10-23T18:59:59+09:00", "2026-10-23", "2026-10-23"],
+    ["2026-10-23T19:00:00+09:00", "2026-10-23", "2026-10-24"],
+    ["2026-10-23T23:59:59+09:00", "2026-10-23", "2026-10-24"],
+    ["2026-10-24T00:00:00+09:00", "2026-10-24", "2026-10-24"],
+    ["2026-12-31T19:00:00+09:00", "2026-12-31", "2027-01-01"],
+  ])("loads the default date at %s", async (time, today, selectedDate) => {
+    vi.setSystemTime(new Date(time));
+    const page = await Home({ searchParams: Promise.resolve({}) });
+    expect(getDailyMenu).toHaveBeenCalledWith(selectedDate);
+    expect(page.props).toMatchObject({ today, selectedDate });
   });
 
   it.each([

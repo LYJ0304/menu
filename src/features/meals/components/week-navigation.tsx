@@ -29,7 +29,7 @@ export function WeekNavigation({
         </div>
         <div className="flex shrink-0 items-center gap-1">
           <Link
-            href="/"
+            href={`/?date=${today}`}
             scroll={false}
             className="flex min-h-9 items-center rounded-md px-2 text-xs font-medium text-body hover:bg-canvas hover:text-ink"
           >

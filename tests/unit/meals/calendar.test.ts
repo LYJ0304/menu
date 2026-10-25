@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  getDefaultMealDate,
   getDefaultMealType,
   getKoreanToday,
   getWeekDates,
@@ -8,7 +9,9 @@ import {
 
 describe("meal calendar", () => {
   it.each([
-    ["2026-10-23T00:00:00+09:00", "LUNCH"],
+    ["2026-10-23T00:00:00+09:00", "BREAKFAST"],
+    ["2026-10-23T08:29:59+09:00", "BREAKFAST"],
+    ["2026-10-23T08:30:00+09:00", "LUNCH"],
     ["2026-10-23T12:59:59+09:00", "LUNCH"],
     ["2026-10-23T13:00:00+09:00", "DINNER"],
     ["2026-10-23T18:59:59+09:00", "DINNER"],
@@ -18,6 +21,18 @@ describe("meal calendar", () => {
     ["2026-10-23T03:59:59Z", "LUNCH"],
   ])("selects the default meal in Korea at %s", (time, expected) => {
     expect(getDefaultMealType(new Date(time))).toBe(expected);
+  });
+
+  it.each([
+    ["2026-10-23T18:59:59+09:00", "2026-10-23"],
+    ["2026-10-23T19:00:00+09:00", "2026-10-24"],
+    ["2026-10-23T23:59:59+09:00", "2026-10-24"],
+    ["2026-10-24T00:00:00+09:00", "2026-10-24"],
+    ["2026-10-24T08:30:00+09:00", "2026-10-24"],
+    ["2026-10-31T10:00:00Z", "2026-11-01"],
+    ["2026-12-31T19:00:00+09:00", "2027-01-01"],
+  ])("selects the default date in Korea at %s", (time, expected) => {
+    expect(getDefaultMealDate(new Date(time))).toBe(expected);
   });
 
   it("changes today's date at midnight in Korea", () => {

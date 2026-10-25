@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getKoreanToday } from "@/features/meals/calendar";
+import { getDefaultMealDate, getKoreanToday } from "@/features/meals/calendar";
 import { MealSchedule } from "@/features/meals/components/meal-schedule";
 import { parseMealDate } from "@/features/meals/date";
 import { getDailyMenu } from "@/features/meals/server";
@@ -20,8 +20,9 @@ export default async function Home({
     redirect("/");
   }
 
-  const today = getKoreanToday();
-  const selectedDate = date ?? today;
+  const now = new Date();
+  const today = getKoreanToday(now);
+  const selectedDate = date ?? getDefaultMealDate(now);
   let menu: DailyMenuResult | null = null;
   try {
     menu = await getDailyMenu(selectedDate);
