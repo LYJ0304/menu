@@ -4,6 +4,7 @@ import { Utensils } from "lucide-react";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { MainNavigation } from "@/components/main-navigation";
 import { getDefaultMealType } from "@/features/meals/calendar";
 import { MealSelectionProvider } from "@/features/meals/components/meal-selection";
 import "./globals.css";
@@ -30,7 +31,7 @@ export default function RootLayout({
           </a>
           <header className="border-b border-line bg-surface">
             <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-4 sm:gap-8">
                 <Link
                   href="/"
                   aria-label="한끼 홈"
@@ -43,15 +44,7 @@ export default function RootLayout({
                   />
                   한끼
                 </Link>
-                <nav aria-label="메인 메뉴" className="hidden sm:block">
-                  <Link
-                    href="/"
-                    aria-current="page"
-                    className="flex h-16 items-center border-b-2 border-ink text-sm font-medium text-ink"
-                  >
-                    식단표
-                  </Link>
-                </nav>
+                <MainNavigation />
               </div>
               <ThemeToggle />
             </div>
