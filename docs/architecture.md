@@ -1,11 +1,12 @@
 # 아키텍처
 
-기능 단위로 코드를 모으는 모듈형 구조를 사용합니다. 현재 구현된 기능은 식단 수집과 조회입니다.
+기능 단위로 코드를 모으는 모듈형 구조를 사용합니다. 현재 구현된 기능은 식단 수집·조회와 전역일 카운트다운입니다.
 
 ```text
 src/
   app/                     Next.js 화면과 API 진입점
   components/
+    main-navigation.tsx    식단표·카운트다운 메뉴와 현재 경로 표시
     theme-provider.tsx     시스템 테마 감지와 저장된 선택 복원
     theme-toggle.tsx       헤더의 라이트·다크 전환 버튼
   features/meals/
@@ -19,6 +20,10 @@ src/
     repositories/          Drizzle 기반 저장·조회 SQL
     http/                  HTTP 인증, 입력 검증, 응답 변환
     server.ts              실제 DB와 외부 데이터 소스를 연결하는 구성 지점
+  features/military/
+    countdown.ts           한국시간 날짜 검증, 남은 시간·D-day·복무율 계산
+    use-military-countdown.ts  화면 생명주기에 맞춘 1초 시계와 구독 정리
+    military-countdown.tsx  카운트다운 UI, 날짜 입력과 브라우저 저장
   lib/
     auth/                  카카오 인증 설정과 Cron 인증
     db/                    서버 전용 DB 연결과 스키마
@@ -38,4 +43,8 @@ API 경로는 `app/api`에 유지합니다. 경로 파일은 실행 환경을 �
 
 `npm run lint`는 수집·CSV·HTTP 코드에서 DB 구현과 서버 구성 지점을 직접 참조하는 것을 막습니다. 단위 테스트는 외부 DB나 네트워크 없이 실행하며, 저장소 인터페이스에 맞춘 가짜 구현을 사용합니다.
 
-DB 스키마와 migration, 공개 API 주소는 이번 구조 정리에서 변경하지 않습니다. README는 환경 설정과 실행 안내만 유지합니다.
+상단 메뉴에서 식단표(`/`)와 전역일 카운트다운(`/countdown`)으로 이동합니다. 현재 경로를 읽는 메뉴와 카운트다운을 Client Component로 분리하고 식단 조회는 Server Component로 유지합니다. 카운트다운은 전용 페이지에만 렌더링하여 식단표로 이동할 때 시계 구독도 해제합니다. 입력 날짜는 기존 날짜 검증을 재사용해 검사한 뒤 `menu-service-dates` 키로 localStorage에 저장합니다. 서버 렌더링에서는 브라우저 저장소나 현재 시각을 읽지 않으며, `useSyncExternalStore`가 hydration 이후 저장된 날짜와 시각을 반영합니다. 같은 탭의 변경과 다른 탭의 storage 이벤트를 구독하고 컴포넌트 제거 시 정리합니다.
+
+카운트다운 시계는 1초마다 `Date.now()`를 읽어 계산하므로 지연이 누적되지 않습니다. 날짜가 없거나 잘못되면 시계 구독을 시작하지 않습니다. 탭이 숨겨지거나 pagehide 이벤트가 발생하면 타이머를 중단하고, visibilitychange·focus·pageshow 이벤트에서 즉시 재계산합니다. 화면 제거 시 타이머와 시계 이벤트 구독을 모두 정리합니다. fake timer와 고정 시각을 사용하는 Vitest 테스트가 날짜 경계와 시계 생명주기를 검증합니다.
+
+DB 스키마와 migration, 공개 API 주소는 변경하지 않습니다.
