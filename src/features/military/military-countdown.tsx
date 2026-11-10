@@ -9,22 +9,11 @@ import {
 } from "./countdown";
 import { useMilitaryCountdown } from "./use-military-countdown";
 
-import { LeaveBalancesForm } from "./leave-balances";
-import {
-  countRemainingWorkdays,
-  parseLeaveBalances,
-  subtractLeave,
-  type LeaveBalances,
-} from "./workdays";
+import { LeaveBalancesSummary } from "./leave-balances";
+import { countRemainingWorkdays, subtractLeave } from "./workdays";
 
-const leaveStorageKey = "menu-leave-balances";
-function readLeave() {
-  try {
-    return window.localStorage.getItem(leaveStorageKey);
-  } catch {
-    return null;
-  }
-}
+import { useScheduleEvents } from "@/features/schedule/use-schedule-events";
+import { getScheduleLeaveBalances } from "./schedule-leave";
 
 const storageKey = "menu-service-dates";
 const changeEvent = "menu-service-dates-change";
@@ -53,8 +42,8 @@ export function MilitaryCountdown() {
     dates?.enlistment ?? "",
     dates?.discharge ?? "",
   );
-  const rawLeave = useSyncExternalStore(subscribeDates, readLeave, serverDates);
-  const leave = parseLeaveBalances(rawLeave);
+  const { events } = useScheduleEvents();
+  const leave = useMemo(() => getScheduleLeaveBalances(events), [events]);
   const today =
     countdown && dates ? shiftDate(dates.discharge, -countdown.dday) : null;
   const enlistment = dates?.enlistment;
@@ -67,15 +56,6 @@ export function MilitaryCountdown() {
     [enlistment, discharge, today],
   );
 
-  function saveLeave(balances: LeaveBalances) {
-    try {
-      window.localStorage.setItem(leaveStorageKey, JSON.stringify(balances));
-      window.dispatchEvent(new Event(changeEvent));
-      return true;
-    } catch {
-      return false;
-    }
-  }
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
 
@@ -308,7 +288,7 @@ export function MilitaryCountdown() {
             ))}
           </dl>
         )}
-        <LeaveBalancesForm balances={leave} onSave={saveLeave} />
+        <LeaveBalancesSummary balances={leave} />
       </aside>
     </div>
   );

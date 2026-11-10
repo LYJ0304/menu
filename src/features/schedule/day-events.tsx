@@ -8,6 +8,8 @@ import {
   type ScheduleEvent,
 } from "./events";
 
+import type { SaveScheduleResult } from "./use-schedule-events";
+
 export function DayEvents({
   date,
   events,
@@ -16,7 +18,7 @@ export function DayEvents({
 }: {
   date: string;
   events: ScheduleEvent[];
-  onSave: (event: ScheduleEvent) => boolean;
+  onSave: (event: ScheduleEvent) => SaveScheduleResult;
   onRemove: (id: string) => boolean;
 }) {
   const id = useId();
@@ -39,22 +41,18 @@ export function DayEvents({
       category: category as ScheduleEvent["category"],
       notes: String(form.get("notes") ?? "").trim(),
     };
-    if (onSave(next)) {
+    const result = onSave(next);
+    if (result.ok) {
       setEditor(null);
       setError("");
       setMessage("일정을 저장했습니다.");
     } else {
-      setError(
-        "일정을 저장하지 못했습니다. 브라우저 저장소 설정과 남은 공간을 확인해 주세요.",
-      );
+      setError(result.message);
     }
   }
 
   return (
-    <section
-      aria-label="선택한 날짜의 일정"
-      className="min-w-0"
-    >
+    <section aria-label="선택한 날짜의 일정" className="min-w-0">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-medium text-ink">
           일정 <span className="text-muted">{events.length}</span>

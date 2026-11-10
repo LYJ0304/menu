@@ -3,6 +3,7 @@ import { parseMealDate } from "@/features/meals/date";
 export const scheduleCategories = [
   "연가",
   "포상휴가",
+  "위로휴가",
   "정기외박",
   "식기",
   "당직",
