@@ -8,8 +8,8 @@ import { MainNavigation } from "@/components/main-navigation";
 
 afterEach(() => vi.clearAllMocks());
 
-it.each(["/", "/countdown", "/unknown"])(
-  "links to both screens and marks only the current route at %s",
+it.each(["/", "/countdown", "/schedule", "/unknown"])(
+  "links to all screens and marks only the current route at %s",
   (pathname) => {
     vi.mocked(usePathname).mockReturnValue(pathname);
     const navigation = MainNavigation();
@@ -19,10 +19,13 @@ it.each(["/", "/countdown", "/unknown"])(
       children: string;
       "aria-current"?: string;
     }>[];
-    expect(links.map((link) => [link.props.href, link.props.children])).toEqual([
-      ["/", "식단표"],
-      ["/countdown", "카운트다운"],
-    ]);
+    expect(links.map((link) => [link.props.href, link.props.children])).toEqual(
+      [
+        ["/", "식단표"],
+        ["/countdown", "카운트다운"],
+        ["/schedule", "일정"],
+      ],
+    );
     for (const link of links) {
       expect(link.props["aria-current"]).toBe(
         link.props.href === pathname ? "page" : undefined,
