@@ -7,6 +7,13 @@ import {
   type ScheduleEvent,
 } from "./events";
 
+import {
+  annualLeaveLimit,
+  getScheduledLeaveDays,
+} from "@/features/military/schedule-leave";
+
+export type SaveScheduleResult = { ok: true } | { ok: false; message: string };
+
 const storageKey = "menu-schedule-events";
 const changeEvent = "menu-schedule-events-change";
 
@@ -30,15 +37,23 @@ function subscribe(notify: () => void) {
 }
 const serverSnapshot = () => null;
 
-function updateEvents(change: (events: ScheduleEvent[]) => ScheduleEvent[]) {
+function updateEvents(
+  change: (events: ScheduleEvent[]) => ScheduleEvent[] | string,
+): SaveScheduleResult {
   try {
     // Read immediately before writing so another tab's saved events are kept.
     const latest = parseScheduleEvents(window.localStorage.getItem(storageKey));
-    window.localStorage.setItem(storageKey, JSON.stringify(change(latest)));
+    const next = change(latest);
+    if (typeof next === "string") return { ok: false, message: next };
+    window.localStorage.setItem(storageKey, JSON.stringify(next));
     window.dispatchEvent(new Event(changeEvent));
-    return true;
+    return { ok: true };
   } catch {
-    return false;
+    return {
+      ok: false,
+      message:
+        "일정을 저장하지 못했습니다. 브라우저 저장소 설정과 남은 공간을 확인해 주세요.",
+    };
   }
 }
 
@@ -47,13 +62,21 @@ export function useScheduleEvents() {
   const events = useMemo(() => parseScheduleEvents(raw), [raw]);
   return {
     events,
-    save: (event: ScheduleEvent) =>
-      isScheduleEvent(event) &&
-      updateEvents((latest) => [
-        ...latest.filter((saved) => saved.id !== event.id),
-        event,
-      ]),
+    save: (event: ScheduleEvent): SaveScheduleResult => {
+      if (!isScheduleEvent(event))
+        return { ok: false, message: "일정 항목과 메모를 확인해 주세요." };
+      return updateEvents((latest) => {
+        const next = [
+          ...latest.filter((saved) => saved.id !== event.id),
+          event,
+        ];
+        if (getScheduledLeaveDays(next).annual > annualLeaveLimit) {
+          return "연가는 최대 24일까지 등록할 수 있습니다.";
+        }
+        return next;
+      });
+    },
     remove: (id: string) =>
-      updateEvents((latest) => latest.filter((event) => event.id !== id)),
+      updateEvents((latest) => latest.filter((event) => event.id !== id)).ok,
   };
 }
