@@ -2,6 +2,22 @@ import type { ScheduleEvent } from "@/features/schedule/events";
 import type { LeaveBalances } from "./workdays";
 
 export const annualLeaveLimit = 24;
+export type LeaveAllowances = { reward: number; consolation: number };
+
+export function parseLeaveAllowances(raw: string | null): LeaveAllowances {
+  const result: LeaveAllowances = { reward: 0, consolation: 0 };
+  try {
+    const value = JSON.parse(raw ?? "null");
+    if (!value || typeof value !== "object") return result;
+    for (const key of ["reward", "consolation"] as const) {
+      if (Number.isInteger(value[key]) && value[key] >= 0 && value[key] <= 999)
+        result[key] = value[key];
+    }
+  } catch {
+    /* Unavailable or malformed browser data starts at zero. */
+  }
+  return result;
+}
 
 /** A leave category on one calendar date represents one day, even if duplicated. */
 export function getScheduledLeaveDays(events: ScheduleEvent[]): LeaveBalances {
@@ -37,7 +53,13 @@ export function getScheduledLeaveDays(events: ScheduleEvent[]): LeaveBalances {
 
 export function getScheduleLeaveBalances(
   events: ScheduleEvent[],
+  allowances: LeaveAllowances = { reward: 0, consolation: 0 },
 ): LeaveBalances {
   const days = getScheduledLeaveDays(events);
-  return { ...days, annual: Math.max(0, annualLeaveLimit - days.annual) };
+  return {
+    ...days,
+    annual: Math.max(0, annualLeaveLimit - days.annual),
+    reward: Math.max(0, allowances.reward - days.reward),
+    consolation: Math.max(0, allowances.consolation - days.consolation),
+  };
 }
