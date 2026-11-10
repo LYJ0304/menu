@@ -7,10 +7,11 @@ export function MainNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="메인 메뉴" className="flex gap-4 sm:gap-6">
+    <nav aria-label="메인 메뉴" className="flex gap-3 sm:gap-6">
       {[
         { href: "/", label: "식단표" },
         { href: "/countdown", label: "카운트다운" },
+        { href: "/schedule", label: "일정" },
       ].map(({ href, label }) => (
         <Link
           key={href}

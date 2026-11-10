@@ -30,8 +30,8 @@ export default function RootLayout({
             본문으로 바로가기
           </a>
           <header className="border-b border-line bg-surface">
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
-              <div className="flex items-center gap-4 sm:gap-8">
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-8">
+              <div className="flex items-center gap-3 sm:gap-8">
                 <Link
                   href="/"
                   aria-label="한끼 홈"
