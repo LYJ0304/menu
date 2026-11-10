@@ -163,8 +163,7 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
                                   key={event.id}
                                   className="block truncate rounded bg-accent/10 px-1 py-0.5 text-left text-[11px]"
                                 >
-                                  {event.time ? `${event.time} ` : ""}
-                                  {event.title}
+                                  {event.category}
                                 </span>
                               ))}
                               {dayEvents.length > 2 && (
@@ -188,7 +187,6 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
         aria-label="선택한 날짜"
         className="rounded-xl border border-line bg-surface p-5"
       >
-        <p className="text-xs text-muted">선택한 날짜</p>
         <h2 className="mt-2 text-base font-semibold text-ink">
           <time dateTime={selected}>
             {formatCalendarDate(selected, {
@@ -198,13 +196,6 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
             })}
           </time>
         </h2>
-        {holidayName(selected) ? (
-          <p className="mt-4 rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-400">
-            {holidayName(selected)}
-          </p>
-        ) : (
-          <p className="mt-4 text-sm text-muted">공휴일이 아닙니다.</p>
-        )}
         <DayEvents
           key={selected}
           date={selected}
@@ -212,10 +203,6 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
           onSave={save}
           onRemove={remove}
         />
-        <div className="mt-5 border-t border-line pt-4 text-xs leading-6 text-muted">
-          <p>한국시간 기준 · 일요일 시작</p>
-          <p>대한민국 공휴일·대체공휴일 표시</p>
-        </div>
       </aside>
     </div>
   );

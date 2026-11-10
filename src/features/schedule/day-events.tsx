@@ -2,7 +2,11 @@
 
 import { useId, useState } from "react";
 import type { FormEvent } from "react";
-import { sortScheduleEvents, type ScheduleEvent } from "./events";
+import {
+  scheduleCategories,
+  sortScheduleEvents,
+  type ScheduleEvent,
+} from "./events";
 
 export function DayEvents({
   date,
@@ -24,16 +28,15 @@ export function DayEvents({
   function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const title = String(form.get("title") ?? "").trim();
-    if (!title) {
-      setError("일정 제목을 입력해 주세요.");
+    const category = String(form.get("category") ?? "");
+    if (!scheduleCategories.includes(category as ScheduleEvent["category"])) {
+      setError("일정 항목을 선택해 주세요.");
       return;
     }
-    const next = {
+    const next: ScheduleEvent = {
       id: editing?.id ?? crypto.randomUUID(),
       date,
-      title,
-      time: String(form.get("time") ?? ""),
+      category: category as ScheduleEvent["category"],
       notes: String(form.get("notes") ?? "").trim(),
     };
     if (onSave(next)) {
@@ -74,11 +77,8 @@ export function DayEvents({
         <ul className="mt-3 space-y-3">
           {sortScheduleEvents(events).map((event) => (
             <li key={event.id} className="rounded-lg border border-line p-3">
-              <p className="text-xs tabular-nums text-accent">
-                {event.time || "종일"}
-              </p>
               <p className="mt-1 break-words text-sm font-medium text-ink [overflow-wrap:anywhere]">
-                {event.title}
+                {event.category}
               </p>
               {event.notes && (
                 <p className="mt-2 whitespace-pre-wrap break-words text-xs leading-5 text-muted [overflow-wrap:anywhere]">
@@ -88,7 +88,7 @@ export function DayEvents({
               <div className="mt-2 flex gap-3">
                 <button
                   type="button"
-                  aria-label={`${event.title} 수정`}
+                  aria-label={`${event.category} 수정`}
                   onClick={() => {
                     setEditor(event);
                     setError("");
@@ -100,9 +100,11 @@ export function DayEvents({
                 </button>
                 <button
                   type="button"
-                  aria-label={`${event.title} 삭제`}
+                  aria-label={`${event.category} 삭제`}
                   onClick={() => {
-                    if (!window.confirm(`‘${event.title}’ 일정을 삭제할까요?`))
+                    if (
+                      !window.confirm(`‘${event.category}’ 일정을 삭제할까요?`)
+                    )
                       return;
                     if (onRemove(event.id)) {
                       if (editing?.id === event.id) setEditor(null);
@@ -133,26 +135,21 @@ export function DayEvents({
           <h4 className="text-sm font-medium text-ink">
             {editing ? "일정 수정" : "새 일정"}
           </h4>
-          <label htmlFor={`${id}-title`} className="block text-xs text-body">
-            제목 <span className="text-muted">(필수)</span>
-            <input
-              id={`${id}-title`}
-              name="title"
+          <label htmlFor={`${id}-category`} className="block text-xs text-body">
+            항목
+            <select
+              id={`${id}-category`}
+              name="category"
               required
-              maxLength={80}
-              defaultValue={editing?.title ?? ""}
+              defaultValue={editing?.category ?? "연가"}
               className="mt-1 min-h-10 w-full min-w-0 rounded-md border border-line bg-surface px-3 text-sm text-ink"
-            />
-          </label>
-          <label htmlFor={`${id}-time`} className="block text-xs text-body">
-            시간 <span className="text-muted">(선택 · 비워두면 종일)</span>
-            <input
-              id={`${id}-time`}
-              name="time"
-              type="time"
-              defaultValue={editing?.time ?? ""}
-              className="mt-1 min-h-10 w-full min-w-0 rounded-md border border-line bg-surface px-3 text-sm text-ink"
-            />
+            >
+              {scheduleCategories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
           </label>
           <label htmlFor={`${id}-notes`} className="block text-xs text-body">
             메모 <span className="text-muted">(선택)</span>
@@ -195,10 +192,6 @@ export function DayEvents({
       )}
       <p role="status" className="mt-2 text-xs text-body">
         {message}
-      </p>
-      <p className="mt-4 text-xs leading-5 text-muted">
-        일정은 이 브라우저에만 저장됩니다. 브라우저 데이터를 지우면 일정도
-        삭제됩니다.
       </p>
     </section>
   );

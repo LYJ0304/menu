@@ -1,10 +1,18 @@
 import { parseMealDate } from "@/features/meals/date";
 
+export const scheduleCategories = [
+  "연가",
+  "포상휴가",
+  "정기외박",
+  "식기",
+  "당직",
+  "전투휴무",
+] as const;
+
 export type ScheduleEvent = {
   id: string;
   date: string;
-  title: string;
-  time: string;
+  category: (typeof scheduleCategories)[number];
   notes: string;
 };
 
@@ -16,11 +24,8 @@ export function isScheduleEvent(value: unknown): value is ScheduleEvent {
     event.id.length > 0 &&
     typeof event.date === "string" &&
     parseMealDate(event.date) === event.date &&
-    typeof event.title === "string" &&
-    event.title.trim().length > 0 &&
-    event.title.length <= 80 &&
-    typeof event.time === "string" &&
-    (event.time === "" || /^([01]\d|2[0-3]):[0-5]\d$/.test(event.time)) &&
+    typeof event.category === "string" &&
+    scheduleCategories.includes(event.category) &&
     typeof event.notes === "string" &&
     event.notes.length <= 500
   );
@@ -44,6 +49,7 @@ export function parseScheduleEvents(raw: string | null): ScheduleEvent[] {
 export function sortScheduleEvents(events: ScheduleEvent[]) {
   return [...events].sort(
     (a, b) =>
-      a.time.localeCompare(b.time) || a.title.localeCompare(b.title, "ko"),
+      scheduleCategories.indexOf(a.category) -
+      scheduleCategories.indexOf(b.category),
   );
 }
