@@ -181,18 +181,9 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
         </table>
       </section>
       <aside
-        aria-label="선택한 날짜"
+        aria-label="일정 목록"
         className="rounded-xl border border-line bg-surface p-5"
       >
-        <h2 className="mt-2 text-base font-semibold text-ink">
-          <time dateTime={selected}>
-            {formatCalendarDate(selected, {
-              month: "long",
-              day: "numeric",
-              weekday: "long",
-            })}
-          </time>
-        </h2>
         <DayEvents
           key={selected}
           date={selected}

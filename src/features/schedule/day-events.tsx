@@ -53,12 +53,12 @@ export function DayEvents({
   return (
     <section
       aria-label="선택한 날짜의 일정"
-      className="mt-5 border-t border-line pt-4"
+      className="min-w-0"
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-medium text-ink">
+        <h2 className="text-sm font-medium text-ink">
           일정 <span className="text-muted">{events.length}</span>
-        </h3>
+        </h2>
         {!editor && (
           <button
             type="button"
