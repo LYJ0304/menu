@@ -142,7 +142,7 @@ export function DayEvents({
               name="category"
               required
               defaultValue={editing?.category ?? "연가"}
-              className="mt-1 min-h-10 w-full min-w-0 rounded-md border border-line bg-surface px-3 text-sm text-ink"
+              className="mt-2 min-h-12 w-full min-w-0 rounded-md border border-line bg-surface px-4 text-base text-ink"
             >
               {scheduleCategories.map((category) => (
                 <option key={category} value={category}>

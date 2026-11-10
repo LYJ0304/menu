@@ -154,14 +154,11 @@ export function ScheduleCalendar({ initialToday }: { initialToday: string }) {
                         )}
                         {dayEvents.length > 0 && (
                           <span className="w-full min-w-0 text-accent">
-                            <span className="sm:hidden">
-                              일정 {dayEvents.length}
-                            </span>
-                            <span className="hidden space-y-1 sm:block">
+                            <span className="block space-y-1">
                               {dayEvents.slice(0, 2).map((event) => (
                                 <span
                                   key={event.id}
-                                  className="block truncate rounded bg-accent/10 px-1 py-0.5 text-left text-[11px]"
+                                  className="block break-all rounded bg-accent/10 px-1 py-0.5 text-center text-[10px] leading-4 sm:text-left sm:text-[11px]"
                                 >
                                   {event.category}
                                 </span>
