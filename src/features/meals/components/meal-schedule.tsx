@@ -148,7 +148,7 @@ export function MealSchedule({
         </div>
         <div className="mt-4 space-y-1 text-center">
           <p>Made by Lee Young Joon</p>
-          <p className="tabular-nums">v1.4.0</p>
+          <p className="tabular-nums">v1.4.1</p>
         </div>
       </footer>
     </main>
