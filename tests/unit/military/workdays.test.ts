@@ -72,15 +72,35 @@ describe("remaining workdays in Korea", () => {
 
 describe("leave balances", () => {
   it("subtracts all leave types without producing negative workdays", () => {
-    expect(subtractLeave(20, { annual: 5, reward: 2, consolation: 3 })).toBe(
-      10,
-    );
-    expect(subtractLeave(3, { annual: 5, reward: 2, consolation: 3 })).toBe(0);
+    expect(
+      subtractLeave(20, {
+        annual: 5,
+        reward: 2,
+        consolation: 3,
+        combatRest: 2,
+      }),
+    ).toBe(8);
+    expect(
+      subtractLeave(3, { annual: 5, reward: 2, consolation: 3, combatRest: 2 }),
+    ).toBe(0);
+  });
+  it("restores saved combat rest and rejects invalid amounts", () => {
+    expect(parseLeaveBalances('{"annual":4,"combatRest":3}')).toEqual({
+      annual: 4,
+      reward: 0,
+      consolation: 0,
+      combatRest: 3,
+    });
+    for (const combatRest of [-1, 1.5, 1000, "3"]) {
+      expect(
+        parseLeaveBalances(JSON.stringify({ combatRest })).combatRest,
+      ).toBe(0);
+    }
   });
   it("restores balances and tolerates missing or malformed browser data", () => {
     expect(
       parseLeaveBalances('{"annual":4,"reward":2,"consolation":1}'),
-    ).toEqual({ annual: 4, reward: 2, consolation: 1 });
+    ).toEqual({ annual: 4, reward: 2, consolation: 1, combatRest: 0 });
     for (const raw of [
       null,
       "broken",
@@ -90,6 +110,7 @@ describe("leave balances", () => {
         annual: 0,
         reward: 0,
         consolation: 0,
+        combatRest: 0,
       });
     }
   });

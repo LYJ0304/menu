@@ -6,12 +6,14 @@ export const leaveLabels = {
   annual: "연가",
   reward: "포상휴가",
   consolation: "위로휴가",
+  combatRest: "전투휴무",
 } as const;
 export type LeaveBalances = Record<keyof typeof leaveLabels, number>;
 export const emptyLeave: LeaveBalances = {
   annual: 0,
   reward: 0,
   consolation: 0,
+  combatRest: 0,
 };
 
 export function parseLeaveBalances(raw: string | null): LeaveBalances {
@@ -111,6 +113,6 @@ export function countRemainingWorkdays(
 export function subtractLeave(workdays: number, leave: LeaveBalances) {
   return Math.max(
     0,
-    workdays - leave.annual - leave.reward - leave.consolation,
+    workdays - leave.annual - leave.reward - leave.consolation - leave.combatRest,
   );
 }
