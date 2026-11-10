@@ -14,6 +14,7 @@ import { countRemainingWorkdays, subtractLeave } from "./workdays";
 
 import { useScheduleEvents } from "@/features/schedule/use-schedule-events";
 import { getScheduleLeaveBalances } from "./schedule-leave";
+import { useLeaveAllowances } from "./use-leave-allowances";
 
 const storageKey = "menu-service-dates";
 const changeEvent = "menu-service-dates-change";
@@ -43,7 +44,11 @@ export function MilitaryCountdown() {
     dates?.discharge ?? "",
   );
   const { events } = useScheduleEvents();
-  const leave = useMemo(() => getScheduleLeaveBalances(events), [events]);
+  const { allowances, save: saveAllowances } = useLeaveAllowances();
+  const leave = useMemo(
+    () => getScheduleLeaveBalances(events, allowances),
+    [events, allowances],
+  );
   const today =
     countdown && dates ? shiftDate(dates.discharge, -countdown.dday) : null;
   const enlistment = dates?.enlistment;
@@ -288,7 +293,11 @@ export function MilitaryCountdown() {
             ))}
           </dl>
         )}
-        <LeaveBalancesSummary balances={leave} />
+        <LeaveBalancesSummary
+          balances={leave}
+          allowances={allowances}
+          onSave={saveAllowances}
+        />
       </aside>
     </div>
   );
